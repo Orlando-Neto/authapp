@@ -1,15 +1,30 @@
 import React from 'react';
 
-import SignRoutes from './SignRoutes';
-import OtherRoutes from './OtherRoutes';
 import { useAuth } from '../contexts/auth';
+import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
 
-const Routes: React.FC = () => {
+import Login from '../pages/Login';
+import Home from '../pages/Home';
+
+const AppRoutes: React.FC = () => {
 
     const { signed } = useAuth();
 
-
-    return signed ? <OtherRoutes /> : <SignRoutes />;
+    return (
+        <BrowserRouter>
+            <Routes>
+                {
+                    signed ? (
+                        <Route path="/" element={<Home />} />
+                    ) : (
+                    <>
+                        <Route path="/" element={<Login />} />
+                    </>)
+                }
+                <Route path='*' element={<Navigate to="/" />}/>
+            </Routes>
+        </BrowserRouter>
+    );
 };
 
-export default Routes;
+export default AppRoutes;
