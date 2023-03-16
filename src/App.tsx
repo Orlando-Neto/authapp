@@ -1,14 +1,13 @@
 import { AuthProvider } from './contexts/auth';
 import AppRoutes from './routes';
-import { ThemeProvider } from '@mui/material';
-import { LightTheme } from './shared/themes';
+import { AppThemeProvider } from './shared/context';
 
 export default function App() {
   return (
     <AuthProvider>
-        <ThemeProvider theme={LightTheme}>
+        <AppThemeProvider>
           <AppRoutes />
-        </ThemeProvider>
+        </AppThemeProvider>
     </AuthProvider>
   );
 }

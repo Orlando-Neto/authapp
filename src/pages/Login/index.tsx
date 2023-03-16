@@ -2,11 +2,13 @@ import { Button } from '@mui/material';
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/auth';
 import Usuario from '../../model/Usuario';
+import { useAppThemeContext } from '../../shared/context';
 
 const Login: React.FC = () => {
 
     const { Login } = useAuth();
     const [user, setUser] = useState<Usuario>({nome: "", email: ""});
+    const { toggleTheme} = useAppThemeContext();
 
     function handleLogin(e: any, user: Usuario) {
         e.preventDefault();
@@ -23,6 +25,7 @@ const Login: React.FC = () => {
                     <input type="text" name="usuario" id='usuario' onChange={(e) => setUser({...user, nome: e.target.value})} value={user.nome} />
                 </div>
                 <Button variant="contained" color='primary' type="submit">Login</Button>
+                <Button variant="contained" color="secondary" type="button" onClick={toggleTheme}>Alterar Tema</Button>
             </form>
         </div>
     );
