@@ -1,10 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import Usuario from '../model/Usuario';
 
-interface props {
-    children: any
-}
-
 interface AuthContextData {
     signed: boolean;
     user: Usuario | null;
@@ -14,7 +10,11 @@ interface AuthContextData {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider: React.FC<props> = ({ children }: props) => {
+interface IAuthProviderProps {
+    children: React.ReactNode
+}
+
+export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
     const [user, setUser] = useState<Usuario | null>(null);
 
