@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/auth';
 import Usuario from '../../model/Usuario';
@@ -21,7 +22,7 @@ const Login: React.FC = () => {
                     <label htmlFor="Usuario">Usuario:</label>
                     <input type="text" name="usuario" id='usuario' onChange={(e) => setUser({...user, nome: e.target.value})} value={user.nome} />
                 </div>
-                <button type="submit">Login</button>
+                <Button variant="contained" color='primary' type="submit">Login</Button>
             </form>
         </div>
     );

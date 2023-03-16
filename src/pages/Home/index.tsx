@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import React from 'react';
 import { useAuth } from '../../contexts/auth';
 
@@ -9,7 +10,7 @@ const Home: React.FC = () => {
         <div>
             Usuário: {user?.nome}
             <h1>Home</h1>
-            <button type="button" onClick={Logout}>Sair</button>
+            <Button type="button" onClick={Logout}>Sair</Button>
         </div>
     )
 };
