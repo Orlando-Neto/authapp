@@ -1,12 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import Usuario from '../model/Usuario';
 
 interface props {
     children: any
-}
-
-interface Usuario {
-    nome: string
-    email: string
 }
 
 interface AuthContextData {
@@ -22,21 +18,6 @@ export const AuthProvider: React.FC<props> = ({ children }: props) => {
 
     const [user, setUser] = useState<Usuario | null>(null);
 
-    async function Login(user: Usuario) {
-
-        setUser(user);
-
-        localStorage.setItem('@App:user', JSON.stringify(user));
-        localStorage.setItem('@App:token', "jsdiwoahdowahduwa");
-    }
-
-    function Logout() {
-        setUser(null);
-
-        sessionStorage.removeItem('@App:user');
-        sessionStorage.removeItem('@App:token');
-    }
-
     useEffect(() => {
         const storagedUser = localStorage.getItem("@App:user");
         const storagedToken = localStorage.getItem("@App:token");
@@ -45,6 +26,25 @@ export const AuthProvider: React.FC<props> = ({ children }: props) => {
             setUser(JSON.parse(storagedUser));
         }
     }, [])
+
+    async function Login(user: Usuario) {
+
+        
+
+        setUser(user);
+
+        localStorage.setItem('@App:user', JSON.stringify(user));
+        localStorage.setItem('@App:token', "jsdiwoahdowahduwa");
+    }
+
+    async function Logout() {
+
+        setUser(null);
+
+        localStorage.removeItem('@App:user');
+        localStorage.removeItem('@App:token');
+    }
+
 
     return (
         <AuthContext.Provider value={{ signed: Boolean(user), user, Login, Logout }}>
