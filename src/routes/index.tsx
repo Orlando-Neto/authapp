@@ -1,32 +1,39 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
-import { useAuth } from '../contexts/auth';
-import { Route, Routes, BrowserRouter, Navigate } from 'react-router-dom';
+import { useAuth, useDrawerContext } from '../shared/context';
+import { Route, Routes } from 'react-router-dom';
 
-import Login from '../pages/Login';
-import Home from '../pages/Home';
+import { Dashboard } from '../pages/dashboard/Dashboard';
 
 const AppRoutes: React.FC = () => {
 
     const { signed } = useAuth();
+    const { setDrawerOption } = useDrawerContext();
+
+    useEffect(() => {
+        setDrawerOption([
+            {
+                label: "Página inicial",
+                path: '/pagina-inicial',
+                icon: 'home'
+            }
+        ]);
+    }, [])
 
     return (
-        <BrowserRouter>
-            <Routes>
-                {
-                    signed ? (
-                        <>
-                            <Route path="/" element={<Home />} />
-                        </>
-                    ) : (
-                        <>
-                            <Route path="/" element={<Login />} />
-                        </>
-                    )
-                }
-                <Route path='*' element={<Navigate to="/" />}/>
-            </Routes>
-        </BrowserRouter>
+        <Routes>
+            {
+                signed ? (
+                    <>
+                        <Route path="/pagina-inicial" element={<Dashboard />} />
+                    </>
+                ) : (
+                    <>
+                        <Route path="/pagina-inicial" element={<Dashboard />} />
+                    </>
+                )
+            }
+        </Routes>
     );
 };
 

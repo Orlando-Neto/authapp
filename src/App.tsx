@@ -1,18 +1,22 @@
-import { AuthProvider } from './contexts/auth';
+import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes';
 import { MenuLateral } from './shared/components';
-import { AppThemeProvider, DrawerProvider } from './shared/context';
+import { AuthProvider, AppThemeProvider, DrawerProvider } from './shared/context';
 
 export default function App() {
   return (
     <AuthProvider>
-        <AppThemeProvider>        
-          <DrawerProvider>
+      <AppThemeProvider>
+        <DrawerProvider>
+          <BrowserRouter>
+
             <MenuLateral>
               <AppRoutes />
             </MenuLateral>
-          </DrawerProvider>        
-        </AppThemeProvider>
+            
+          </BrowserRouter>
+        </DrawerProvider>        
+      </AppThemeProvider>
     </AuthProvider>
   );
 }

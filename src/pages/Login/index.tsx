@@ -1,14 +1,13 @@
 import { Button } from '@mui/material';
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/auth';
+import { useAuth } from '../../shared/context';
 import Usuario from '../../model/Usuario';
-import { useAppThemeContext, useDrawerContext } from '../../shared/context';
+import { useDrawerContext } from '../../shared/context';
 
 const Login: React.FC = () => {
 
     const { Login } = useAuth();
     const [user, setUser] = useState<Usuario>({nome: "", email: ""});
-    const { toggleTheme} = useAppThemeContext();
     const { toggleDrawerOpen } = useDrawerContext()
 
     function handleLogin(e: any, user: Usuario) {

@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import React from 'react';
-import { useAuth } from '../../contexts/auth';
+import { useAuth } from '../../shared/context';
 
 const Home: React.FC = () => {
 
