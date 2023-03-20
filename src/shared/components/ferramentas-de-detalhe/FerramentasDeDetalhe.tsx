@@ -1,4 +1,5 @@
-import { Box, Paper, useTheme, Icon, Button, Divider, Skeleton } from "@mui/material"
+import { Box, Paper, useTheme, Icon, Button, 
+    Divider, Skeleton, Typography, useMediaQuery } from "@mui/material"
 
 interface IFerramentasDeDetalheProps {
     textNewButton?: string;
@@ -31,7 +32,7 @@ export const FerramentasDeDetalhe: React.FC<IFerramentasDeDetalheProps> = ({
     showBackButton = true,
     showDelButton = true,
     showNewButton = true,
-    showSaveAndBackButton = false,
+    showSaveAndBackButton = true, // Deixar no false para não ficar para todos
     showSaveButton = true,
 
     showBackButtonLoading = false,
@@ -50,6 +51,9 @@ export const FerramentasDeDetalhe: React.FC<IFerramentasDeDetalheProps> = ({
 
     const theme = useTheme();
 
+    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
         <Box 
             margin={1}
@@ -67,19 +71,29 @@ export const FerramentasDeDetalhe: React.FC<IFerramentasDeDetalheProps> = ({
                 disableElevation
                 onClick={onClickSaveButton}
                 startIcon={<Icon>save</Icon>}
-            >Salvar</Button>)}
+            >
+                <Typography variant="button" whiteSpace='nowrap' 
+                    textOverflow='ellipsis' overflow="hidden"
+                >
+                    Salvar
+                </Typography>
+            </Button>)}
 
             {showSaveButtonLoading && (<Skeleton width={110} height={60} />)}
 
-            {(showSaveAndBackButton && !showSaveAndBackButtonLoading) && (<Button
+            {(showSaveAndBackButton && !showSaveAndBackButtonLoading && !mdDown) && (<Button
                 variant='outlined'
                 color='primary'
                 disableElevation
                 onClick={onClickSaveAndBackButton}
                 startIcon={<Icon>save</Icon>}
-            >Salvar e Voltar</Button>)}
+            >
+                <Typography variant="button" whiteSpace='nowrap' textOverflow='ellipsis' overflow="hidden">
+                    Salvar e Voltar
+                </Typography>
+            </Button>)}
             
-            {showSaveAndBackButtonLoading && (<Skeleton width={180} height={60} />)}
+            {(showSaveAndBackButtonLoading && !mdDown) && (<Skeleton width={180} height={60} />)}
             
             {(showDelButton && !showDelButtonLoading) && (<Button
                 variant='outlined'
@@ -87,21 +101,34 @@ export const FerramentasDeDetalhe: React.FC<IFerramentasDeDetalheProps> = ({
                 disableElevation
                 onClick={onClickDelButton}
                 startIcon={<Icon>delete</Icon>}
-            >Apagar</Button>)}
+            >
+                <Typography variant="button" whiteSpace='nowrap' textOverflow='ellipsis' overflow="hidden">
+                    Apagar
+                </Typography>
+            </Button>)}
 
             {showDelButtonLoading && (<Skeleton width={102} height={60} />)}
 
-            {(showNewButton && !showNewButtonLoading) && (<Button
+            {(showNewButton && !showNewButtonLoading && !smDown) && (<Button
                 variant='outlined'
                 color='primary'
                 disableElevation
                 onClick={onClickNewButton}
                 startIcon={<Icon>add</Icon>}
-            >{textNewButton}</Button>)}
+            >
+                
+                <Typography variant="button" whiteSpace='nowrap' textOverflow='ellipsis' overflow="hidden">
+                    {textNewButton}
+                </Typography>
+            </Button>)}
 
-            {showNewButtonLoading && (<Skeleton width={100} height={60} />)}
+            {(showNewButtonLoading && !smDown) && (<Skeleton width={100} height={60} />)}
 
-            <Divider variant="middle" orientation="vertical" />
+            
+            {(showBackButton && 
+            (showNewButton || showDelButton || showSaveButton || showSaveAndBackButton)) &&
+            (<Divider variant="middle" orientation="vertical" />)}
+
 
             {(showBackButton && !showBackButtonLoading) && (<Button
                 variant='outlined'
@@ -109,7 +136,11 @@ export const FerramentasDeDetalhe: React.FC<IFerramentasDeDetalheProps> = ({
                 disableElevation
                 onClick={onClickBackButton}
                 startIcon={<Icon>arrow_back</Icon>}
-            >Voltar</Button>)}
+            >
+                <Typography variant="button" whiteSpace='nowrap' textOverflow='ellipsis' overflow="hidden">
+                    Voltar
+                </Typography>
+            </Button>)}
 
             {showBackButtonLoading && (<Skeleton width={110} height={60} />)}
         </Box>
