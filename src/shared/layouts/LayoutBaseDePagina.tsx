@@ -4,11 +4,11 @@ import { ReactNode } from 'react';
 
 interface ILayoutBaseDePaginaProps {
     children: React.ReactNode;
-    titulo: string;
-    barraDeFerramentas: ReactNode | undefined;
+    title: string;
+    toolbar: ReactNode | undefined;
 }
 
-export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({children, titulo, barraDeFerramentas}) => {
+export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({children, title, toolbar}) => {
 
     const theme = useTheme();
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
@@ -33,12 +33,12 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({children
                     whiteSpace="nowrap"
                     textOverflow='ellipsis'
                 >
-                    {titulo}
+                    {title}
                 </Typography>
             </Box>
 
-            {barraDeFerramentas && (<Box>
-                {barraDeFerramentas}
+            {toolbar && (<Box>
+                {toolbar}
             </Box>)}
 
             <Box flex={1} overflow="auto">

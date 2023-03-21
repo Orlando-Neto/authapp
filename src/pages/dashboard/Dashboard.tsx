@@ -1,12 +1,12 @@
 import { LayoutBaseDePagina } from "../../shared/layouts"
-import { FerramentasDaListagem, FerramentasDeDetalhe } from "../../shared/components"
+import { FerramentasDeDetalhe } from "../../shared/components"
 
 export const Dashboard: React.FC = () => {
 
     return (
         <LayoutBaseDePagina 
-            titulo='Página inicial totalmente gigante, texto foda gigante gigante'
-            barraDeFerramentas={(<FerramentasDeDetalhe />)}>
+            title='Página inicial totalmente gigante, texto foda gigante gigante'
+            toolbar={(<FerramentasDeDetalhe />)}>
             Testando
         </LayoutBaseDePagina>
     )
