@@ -1,9 +1,10 @@
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes';
 import { MenuLateral } from './shared/components';
-import { AuthProvider, AppThemeProvider, DrawerProvider } from './shared/context';
+import { AppThemeProvider, AuthProvider, DrawerProvider } from './shared/context';
 
 export default function App() {
+  
   return (
     <AuthProvider>
       <AppThemeProvider>

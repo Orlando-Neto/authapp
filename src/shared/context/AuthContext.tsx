@@ -29,8 +29,6 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
 
     async function Login(user: Usuario) {
 
-        
-
         setUser(user);
 
         localStorage.setItem('@App:user', JSON.stringify(user));

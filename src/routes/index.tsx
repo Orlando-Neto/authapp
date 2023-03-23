@@ -3,7 +3,10 @@ import React, {useEffect} from 'react';
 import { useAuth, useDrawerContext } from '../shared/context';
 import { Route, Routes } from 'react-router-dom';
 
-import { Dashboard, Oi } from '../pages';
+import { 
+    Dashboard,
+    ListagemDePessoas,
+} from '../pages';
 
 const AppRoutes: React.FC = () => {
 
@@ -18,12 +21,12 @@ const AppRoutes: React.FC = () => {
                 icon: 'home'
             },
             {
-                label: "Oi",
-                path: "/oi",
-                icon: "comedy"
+                label: "Pessoas",
+                path: "/pessoas",
+                icon: "people"
             }
         ]);
-    }, [])
+    }, []);
 
     return (
         <Routes>
@@ -38,7 +41,7 @@ const AppRoutes: React.FC = () => {
                     </>
                 )
             }
-            <Route path="/oi" element={<Oi />} />
+            <Route path="/pessoas" element={<ListagemDePessoas />} />
         </Routes>
     );
 };
