@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { useAuth, useDrawerContext } from '../shared/context';
 
@@ -7,6 +7,7 @@ import {
     Dashboard,
     ListagemDePessoas,
 } from '../pages';
+import { Box } from '@mui/material';
 
 const AppRoutes: React.FC = () => {
 
@@ -42,6 +43,8 @@ const AppRoutes: React.FC = () => {
                 )
             }
             <Route path="/pessoas" element={<ListagemDePessoas />} />
+            <Route path="/pessoas/detalhe/:id" element={<p>Detalhe</p>} />
+            <Route path="*" element={<Navigate to="/pagina-inicial" />} />
         </Routes>
     );
 };
