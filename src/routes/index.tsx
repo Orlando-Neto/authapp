@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import { useAuth, useDrawerContext } from '../shared/context';
-import { Route, Routes } from 'react-router-dom';
 
 import { 
     Dashboard,

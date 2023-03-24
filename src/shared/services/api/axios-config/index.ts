@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { errorInterceptor, responseInterceptor } from './interceptors';
 
+import { errorInterceptor, responseInterceptor } from './interceptors';
 import { Environment } from '../../../environment';
 
 //Url da api alvo

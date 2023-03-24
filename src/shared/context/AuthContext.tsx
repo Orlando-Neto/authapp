@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+
 import Usuario from '../../model/Usuario';
 
 interface AuthContextData {

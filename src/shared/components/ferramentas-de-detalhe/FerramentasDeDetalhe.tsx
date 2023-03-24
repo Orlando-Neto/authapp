@@ -1,5 +1,14 @@
-import { Box, Paper, useTheme, Icon, Button, 
-    Divider, Skeleton, Typography, useMediaQuery } from "@mui/material"
+import {
+    Box,
+    Paper,
+    useTheme,
+    Icon,
+    Button,
+    Divider,
+    Skeleton,
+    Typography,
+    useMediaQuery
+} from "@mui/material";
 
 interface IFerramentasDeDetalheProps {
     textNewButton?: string;

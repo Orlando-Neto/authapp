@@ -1,3 +1,4 @@
+import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 import {
     Drawer,
     Box,
@@ -12,7 +13,6 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-import { useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 import { useAppThemeContext, useDrawerContext } from '../../context';
 
 interface IListItemLinkProps {
@@ -26,6 +26,7 @@ const ListItemLink: React.FC<IListItemLinkProps> = ({ to, icon, label, onClick})
 
     const navigate = useNavigate();
 
+    //Verifica se o caminho da URL bate com a variável to
     const resolvedPath = useResolvedPath(to);
     const match = useMatch({path: resolvedPath.pathname, end: false})
 

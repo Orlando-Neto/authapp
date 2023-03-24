@@ -1,4 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
+
 import AppRoutes from './routes';
 import { MenuLateral } from './shared/components';
 import { AppThemeProvider, AuthProvider, DrawerProvider } from './shared/context';
