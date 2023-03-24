@@ -52,7 +52,7 @@ export const ListagemDePessoas = () => {
                     }
                 });
         });
-    }, [search, page]);
+    }, [search, page, debounce]);
 
     const handleDelete = (id: number) => {
 
@@ -78,6 +78,7 @@ export const ListagemDePessoas = () => {
             toolbar={
                 <FerramentasDaListagem
                     textNewButton="Nova"
+                    onClickNewButton={() => navigate('/pessoas/detalhe/nova')}
                     showInputSearch
                     textSearch={search}
                     onChangeTextSearch={text => setSearchParams({search: text, page: '1'}, {replace: true})}
@@ -113,7 +114,7 @@ export const ListagemDePessoas = () => {
                         }
                     </TableBody>
 
-                    {(totalCount == 0 && !isLoading) && (
+                    {(totalCount === 0 && !isLoading) && (
                         <caption>{Environment.LISTAGEM_VAZIA}</caption>
                     )}
 
