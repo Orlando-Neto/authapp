@@ -13,12 +13,6 @@
       "nomeCompleto": "Elijah Waters"
     },
     {
-      "id": 6,
-      "email": "donec.vitae@icloud.ca",
-      "cidadeId": 638,
-      "nomeCompleto": "Lilah Oneal"
-    },
-    {
       "id": 7,
       "email": "dolor.tempus@protonmail.net",
       "cidadeId": 399,
@@ -26,9 +20,9 @@
     },
     {
       "id": 8,
-      "email": "scelerisque.scelerisque.dui@yahoo.edu",
-      "cidadeId": 797,
-      "nomeCompleto": "Gay Velasquez"
+      "nomeCompleto": "Gay Silva",
+      "email": "scelerisque.dwwa.dui@yahoo.edu",
+      "cidadeId": 797
     },
     {
       "id": 9,

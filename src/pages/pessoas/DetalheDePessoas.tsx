@@ -1,11 +1,19 @@
-import { LinearProgress } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Box, Grid, LinearProgress, Paper } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom"
+import Typography from "@mui/material/Typography";
+import { FormHandles } from "@unform/core";
 
+import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { FerramentasDeDetalhe } from "../../shared/components"
 import { LayoutBaseDePagina } from "../../shared/layouts"
-import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { VTextField, VForm } from "../../shared/forms";
 
+interface IFormData {
+    email: string;
+    cidadeId: number;
+    nomeCompleto: string;
+}
 
 export const DetalheDePessoas = () => {
 
@@ -13,7 +21,13 @@ export const DetalheDePessoas = () => {
     const { id = 'nova' } = useParams<'id'>();
     const navigate = useNavigate();
 
+    //Pega uma referencia do HTML que está utilizando para utilizar essa referencia por fora
+    const formRef = useRef<FormHandles>(null);
+
+    //isLoading para deixar o site em modo carregando enquanto carrega as variáveis async
     const [isLoading, setIsLoading] = useState(false);
+
+    //name que será utilizado para mostrar o nome da pessoa a ser alterada (caso for editar uma pessoa)
     const [name, setName] = useState('');
 
     useEffect(() => {
@@ -29,16 +43,45 @@ export const DetalheDePessoas = () => {
                         alert(result.message);
                         navigate('/pessoas');
                     } else {
-                        console.log(result);
-
+                        
                         setName(result.nomeCompleto);
+                        formRef.current?.setData(result);
                     }
                 });
+        } else {
+            formRef.current?.setData({
+                nomeCompleto: '',
+                email: '',
+                cidadeId: ''
+            });
         }
     }, [id, navigate]);
 
-    const handleSave = () => {
-        console.log('Save');
+    const handleSave = (dados: IFormData) => {
+        setIsLoading(true);
+        if(id === 'nova') {
+
+            PessoasService.create(dados)
+                .then((result) => {
+                    setIsLoading(false);
+
+                    if(result instanceof Error) {
+                        alert(result.message);
+                    } else {
+                        navigate(`/pessoas/detalhe/${result}`);
+                    }
+                });
+        } else {
+
+            PessoasService.updateById(Number(id), {id: Number(id), ...dados})
+                .then((result) => {
+                    setIsLoading(false);
+
+                    if(result instanceof Error) {
+                        alert(result.message);
+                    }
+                });
+        }
     }
 
     const handleDelete = (id: number) => {
@@ -65,17 +108,73 @@ export const DetalheDePessoas = () => {
                 showDelButton={id !== 'nova'}
                 showNewButton={id !== 'nova'}
 
-                onClickSaveButton={ handleSave }
-                onClickSaveAndBackButton={ handleSave }
+                onClickSaveButton={ () => formRef.current?.submitForm() }
+                onClickSaveAndBackButton={ () => formRef.current?.submitForm() }
                 onClickDelButton={() => handleDelete(Number(id)) }
                 onClickNewButton={() => { navigate('/pessoas/detalhe/nova') }}
                 onClickBackButton={() => { navigate('/pessoas') }}
+
+                showBackButtonLoading={isLoading}
+                showDelButtonLoading={isLoading}
+                showNewButtonLoading={isLoading}
+                showSaveAndBackButtonLoading={isLoading}
+                showSaveButtonLoading={isLoading}
             />}
         >
-            {(isLoading) && (
-                <LinearProgress variant="indeterminate" />
-            )}
-            {id}
+            <VForm ref={formRef} onSubmit={handleSave}>
+                <Box margin={1} display="flex" flexDirection="column"
+                    component={Paper} variant="outlined"
+                >
+                    <Grid container direction="column" padding={2} spacing={2}>
+
+                        {(isLoading) && (
+                            <Grid item>
+                                <LinearProgress variant="indeterminate" />
+                            </Grid>
+                        )}
+
+                        <Grid item>
+                            <Typography variant="h6">
+                                Geral
+                            </Typography>
+                        </Grid>
+
+                        <Grid container item direction="row" spacing={2}>
+                            <Grid item xs={12} md={6} lg={4} xl={2}>
+                                <VTextField
+                                    disabled={isLoading}
+                                    fullWidth 
+                                    label="Nome Completo"
+                                    name="nomeCompleto"
+                                    onChange={e => setName(e.target.value)}
+                                    />
+                            </Grid>
+                        </Grid>
+
+                        <Grid container item direction="row" spacing={2}>
+                            <Grid item xs={12} md={6} lg={4} xl={2}>
+                                <VTextField
+                                    disabled={isLoading}
+                                    fullWidth 
+                                    label="Email"
+                                    name="email"
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <Grid container item direction="row" spacing={2}>
+                            <Grid item xs={12} md={6} lg={4} xl={2}>
+                                <VTextField
+                                    disabled={isLoading}
+                                    fullWidth 
+                                    label="Cidade"
+                                    name="cidadeId"
+                                />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </VForm>
         </LayoutBaseDePagina>
     )
 }
