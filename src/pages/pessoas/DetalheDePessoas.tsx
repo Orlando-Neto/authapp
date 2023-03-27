@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Grid, LinearProgress, Paper } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom"
 import Typography from "@mui/material/Typography";
-import { FormHandles } from "@unform/core";
 
 import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { FerramentasDeDetalhe } from "../../shared/components"
 import { LayoutBaseDePagina } from "../../shared/layouts"
-import { VTextField, VForm } from "../../shared/forms";
+import { VTextField, VForm, useVForm } from "../../shared/forms";
 
 interface IFormData {
     email: string;
@@ -22,7 +21,7 @@ export const DetalheDePessoas = () => {
     const navigate = useNavigate();
 
     //Pega uma referencia do HTML que está utilizando para utilizar essa referencia por fora
-    const formRef = useRef<FormHandles>(null);
+    const { formRef, save, saveAndBack, isSaveAndBack } = useVForm();
 
     //isLoading para deixar o site em modo carregando enquanto carrega as variáveis async
     const [isLoading, setIsLoading] = useState(false);
@@ -68,7 +67,11 @@ export const DetalheDePessoas = () => {
                     if(result instanceof Error) {
                         alert(result.message);
                     } else {
-                        navigate(`/pessoas/detalhe/${result}`);
+                        if(isSaveAndBack()) {
+                            navigate('/pessoas');
+                        } else {
+                            navigate(`/pessoas/detalhe/${result}`);
+                        }
                     }
                 });
         } else {
@@ -79,6 +82,10 @@ export const DetalheDePessoas = () => {
 
                     if(result instanceof Error) {
                         alert(result.message);
+                    } else {
+                        if(isSaveAndBack()) {
+                            navigate('/pessoas');
+                        }
                     }
                 });
         }
@@ -108,8 +115,8 @@ export const DetalheDePessoas = () => {
                 showDelButton={id !== 'nova'}
                 showNewButton={id !== 'nova'}
 
-                onClickSaveButton={ () => formRef.current?.submitForm() }
-                onClickSaveAndBackButton={ () => formRef.current?.submitForm() }
+                onClickSaveButton={ save }
+                onClickSaveAndBackButton={ saveAndBack }
                 onClickDelButton={() => handleDelete(Number(id)) }
                 onClickNewButton={() => { navigate('/pessoas/detalhe/nova') }}
                 onClickBackButton={() => { navigate('/pessoas') }}
