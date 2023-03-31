@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { IListagemPessoa, PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { IListagemCidade, CidadesService } from "../../shared/services/api/cidades/CidadesService";
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { Environment } from "../../shared/environment";
 import { useDebounce } from "../../shared/hooks";
 
-export const ListagemDePessoas = () => {
+export const ListagemDeCidades = () => {
 
     //Usando o seacrhParams para que a busca seja escrita na URL para poder compartilhar a busca
     const [searchParams, setSearchParams] = useSearchParams();
@@ -18,8 +18,8 @@ export const ListagemDePessoas = () => {
 
     const navigate = useNavigate();
 
-    //States para a listagem de pessoas
-    const [rows, setRows] = useState<IListagemPessoa[]>([]);
+    //States para a listagem de cidades
+    const [rows, setRows] = useState<IListagemCidade[]>([]);
     const [totalCount, setTotalCount] = useState(0);
 
     //Coloca em modo de carregando em verdade
@@ -37,7 +37,7 @@ export const ListagemDePessoas = () => {
         setIsLoading(true);
 
         debounce(() => {
-            PessoasService.getAll(page, search)
+            CidadesService.getAll(page, search)
                 .then((result) => {
                     
                     setIsLoading(false);
@@ -57,7 +57,7 @@ export const ListagemDePessoas = () => {
     const handleDelete = (id: number) => {
 
         if(window.confirm("Realmente deseja apagar?")) {
-            PessoasService.deleteById(id)
+            CidadesService.deleteById(id)
                 .then(result => {
                     if(result instanceof Error) {
                         alert(result.message);
@@ -74,11 +74,11 @@ export const ListagemDePessoas = () => {
 
     return (
         <LayoutBaseDePagina 
-            title="Listagem de Pessoas"
+            title="Listagem de Cidades"
             toolbar={
                 <FerramentasDaListagem
                     textNewButton="Nova"
-                    onClickNewButton={() => navigate('/pessoas/detalhe/nova')}
+                    onClickNewButton={() => navigate('/cidades/detalhe/nova')}
                     showInputSearch
                     textSearch={search}
                     onChangeTextSearch={text => setSearchParams({search: text, page: '1'}, {replace: true})}
@@ -90,8 +90,7 @@ export const ListagemDePessoas = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell width={100}>Ações</TableCell>
-                            <TableCell>Nome Completo</TableCell>
-                            <TableCell>Email</TableCell>
+                            <TableCell>Nome</TableCell>
                         </TableRow>
                     </TableHead>
 
@@ -103,12 +102,11 @@ export const ListagemDePessoas = () => {
                                         <IconButton size="small" onClick={() => handleDelete(row.id)}>
                                             <Icon>delete</Icon>
                                         </IconButton>
-                                        <IconButton size="small" onClick={() => navigate(`/pessoas/detalhe/${row.id}`)}>
+                                        <IconButton size="small" onClick={() => navigate(`/cidades/detalhe/${row.id}`)}>
                                             <Icon>edit</Icon>
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell>{row.nomeCompleto}</TableCell>
-                                    <TableCell>{row.email}</TableCell>
+                                    <TableCell>{row.nome}</TableCell>
                                 </TableRow>
                             ))
                         }

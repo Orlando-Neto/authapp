@@ -4,25 +4,20 @@ import { useNavigate, useParams } from "react-router-dom"
 import Typography from "@mui/material/Typography";
 import * as yup from 'yup';
 
-import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { CidadesService } from "../../shared/services/api/cidades/CidadesService";
 import { VTextField, VForm, useVForm, IVFormErrors } from "../../shared/forms";
 import { FerramentasDeDetalhe } from "../../shared/components"
 import { LayoutBaseDePagina } from "../../shared/layouts"
-import { AutoCompleteCidade } from "./components/AutoCompleteCidade";
 
 interface IFormData {
-    email: string;
-    cidadeId: number;
-    nomeCompleto: string;
+    nome: string;
 }
 
 const formValidationSchema: yup.Schema<IFormData> = yup.object().shape({
-    nomeCompleto: yup.string().required().min(3, 'O campo precisa ter no mínimo 3 caracteres'),
-    email: yup.string().required('O campo é obrigatório').email(),
-    cidadeId: yup.number().required(),
+    nome: yup.string().required().min(3),
 });
 
-export const DetalheDePessoas = () => {
+export const DetalheDeCidades = () => {
 
     //Busca o parametro id como primeiro parametro, para colocar outro paramentro só colocar vírgula
     const { id = 'nova' } = useParams<'id'>();
@@ -42,31 +37,27 @@ export const DetalheDePessoas = () => {
 
             setIsLoading(true);
 
-            PessoasService.getById(Number(id))
+            CidadesService.getById(Number(id))
                 .then(result => {
                     setIsLoading(false);
 
                     if(result instanceof Error) {
                         alert(result.message);
-                        navigate('/pessoas');
+                        navigate('/cidades');
                     } else {
                         
-                        setName(result.nomeCompleto);
+                        setName(result.nome);
                         formRef.current?.setData(result);
                     }
                 });
         } else {
             formRef.current?.setData({
-                nomeCompleto: '',
-                email: '',
-                cidadeId: undefined
+                nome: ''
             });
         }
     }, [id, navigate]);
 
     const handleSave = (dados: IFormData) => {
-
-        console.log(dados);
 
         formValidationSchema
             .validate(dados, { abortEarly: false })
@@ -76,7 +67,7 @@ export const DetalheDePessoas = () => {
 
                 if(id === 'nova') {
         
-                    PessoasService.create(dadosValidados)
+                    CidadesService.create(dadosValidados)
                         .then((result) => {
                             setIsLoading(false);
         
@@ -84,15 +75,15 @@ export const DetalheDePessoas = () => {
                                 alert(result.message);
                             } else {
                                 if(isSaveAndBack()) {
-                                    navigate('/pessoas');
+                                    navigate('/cidades');
                                 } else {
-                                    navigate(`/pessoas/detalhe/${result}`);
+                                    navigate(`/cidades/detalhe/${result}`);
                                 }
                             }
                         });
                 } else {
         
-                    PessoasService.updateById(Number(id), {id: Number(id), ...dadosValidados})
+                    CidadesService.updateById(Number(id), {id: Number(id), ...dadosValidados})
                         .then((result) => {
                             setIsLoading(false);
         
@@ -100,7 +91,7 @@ export const DetalheDePessoas = () => {
                                 alert(result.message);
                             } else {
                                 if(isSaveAndBack()) {
-                                    navigate('/pessoas');
+                                    navigate('/cidades');
                                 }
                             }
                         });
@@ -121,13 +112,13 @@ export const DetalheDePessoas = () => {
     const handleDelete = (id: number) => {
 
         if(window.confirm("Realmente deseja apagar?")) {
-            PessoasService.deleteById(id)
+            CidadesService.deleteById(id)
                 .then(result => {
                     if(result instanceof Error) {
                         alert(result.message);
                     } else {
                         alert("Registro apagado com sucesso!");
-                        navigate('/pessoas');
+                        navigate('/cidades');
                     }
                 });
         }
@@ -135,7 +126,7 @@ export const DetalheDePessoas = () => {
 
     return (
         <LayoutBaseDePagina
-            title={id === 'nova' ? 'Nova Pessoa' : name}
+            title={id === 'nova' ? 'Nova Cidade' : name}
             toolbar={<FerramentasDeDetalhe 
                 textNewButton="Nova"
                 showSaveAndBackButton
@@ -145,8 +136,8 @@ export const DetalheDePessoas = () => {
                 onClickSaveButton={ save }
                 onClickSaveAndBackButton={ saveAndBack }
                 onClickDelButton={() => handleDelete(Number(id)) }
-                onClickNewButton={() => { navigate('/pessoas/detalhe/nova') }}
-                onClickBackButton={() => { navigate('/pessoas') }}
+                onClickNewButton={() => { navigate('/cidades/detalhe/nova') }}
+                onClickBackButton={() => { navigate('/cidades') }}
 
                 showBackButtonLoading={isLoading}
                 showDelButtonLoading={isLoading}
@@ -178,31 +169,13 @@ export const DetalheDePessoas = () => {
                                 <VTextField
                                     disabled={isLoading}
                                     fullWidth 
-                                    label="Nome Completo"
-                                    name="nomeCompleto"
+                                    label="Nome"
+                                    name="nome"
                                     onChange={e => setName(e.target.value)}
                                     />
                             </Grid>
                         </Grid>
 
-                        <Grid container item direction="row" spacing={2}>
-                            <Grid item xs={12} md={6} lg={4} xl={2}>
-                                <VTextField
-                                    disabled={isLoading}
-                                    fullWidth 
-                                    label="Email"
-                                    name="email"
-                                />
-                            </Grid>
-                        </Grid>
-
-                        <Grid container item direction="row" spacing={2}>
-                            <Grid item xs={12} md={6} lg={4} xl={2}>
-                                <AutoCompleteCidade
-                                    isExternalLoading={isLoading}
-                                />
-                            </Grid>
-                        </Grid>
                     </Grid>
                 </Box>
             </VForm>
