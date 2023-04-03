@@ -50,7 +50,7 @@ export const AutoCompleteCidade = ({ isExternalLoading = false }: IAutoCompleteC
                     }
                 });
         });
-    }, [search, setSearch]);
+    }, [search, setSearch, debounce]);
 
     const autoCompleteSelectedOption = useMemo(() => {
         if(!selectedId) return null;

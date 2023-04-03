@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { IListagemCidade, CidadesService } from "../../shared/services/api/cidades/CidadesService";
+import { CidadesService } from "../../shared/services/api/cidades/CidadesService";
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { Environment } from "../../shared/environment";
+import { Cidade } from "../../shared/models/Cidade";
 import { useDebounce } from "../../shared/hooks";
 
 export const ListagemDeCidades = () => {
@@ -19,7 +20,7 @@ export const ListagemDeCidades = () => {
     const navigate = useNavigate();
 
     //States para a listagem de cidades
-    const [rows, setRows] = useState<IListagemCidade[]>([]);
+    const [rows, setRows] = useState<Cidade[]>([]);
     const [totalCount, setTotalCount] = useState(0);
 
     //Coloca em modo de carregando em verdade

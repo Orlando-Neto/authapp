@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { useAuth, useDrawerContext } from '../shared/context';
+import { useDrawerContext } from '../shared/context';
 
 import { 
     Dashboard,
@@ -13,7 +13,6 @@ import {
 
 const AppRoutes: React.FC = () => {
 
-    const { signed } = useAuth();
     const { setDrawerOption } = useDrawerContext();
 
     useEffect(() => {
@@ -38,17 +37,7 @@ const AppRoutes: React.FC = () => {
 
     return (
         <Routes>
-            {
-                signed ? (
-                    <>
-                        <Route path="/pagina-inicial" element={<Dashboard />} />
-                    </>
-                ) : (
-                    <>
-                        <Route path="/pagina-inicial" element={<Dashboard />} />
-                    </>
-                )
-            }
+            <Route path="/pagina-inicial" element={<Dashboard />} />
             <Route path="/pessoas" element={<ListagemDePessoas />} />
             <Route path="/pessoas/detalhe/:id" element={<DetalheDePessoas />} />
             <Route path="/cidades" element={<ListagemDeCidades />} />

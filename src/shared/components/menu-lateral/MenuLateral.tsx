@@ -13,7 +13,7 @@ import {
     useMediaQuery
 } from '@mui/material';
 
-import { useAppThemeContext, useDrawerContext } from '../../context';
+import { useAppThemeContext, useAuth, useDrawerContext } from '../../context';
 
 interface IListItemLinkProps {
     to: string;
@@ -56,7 +56,8 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
 
     const { isDrawerOpen, toggleDrawerOpen, drawerOptions } = useDrawerContext();
     const { themeName, toggleTheme } = useAppThemeContext();
-    
+    const { logout } = useAuth();
+
     return (
         <>
             <Drawer open={isDrawerOpen} variant={smDown ? 'temporary' : 'permanent'} onClose={toggleDrawerOpen}>
@@ -90,6 +91,12 @@ export const MenuLateral: React.FC<IMenuLateralProps> = ({ children }) => {
                                     <Icon>{themeName === 'dark'? 'light_mode' : 'dark_mode'}</Icon>
                                 </ListItemIcon>
                                 <ListItemText primary="Alternar tema"/>
+                            </ListItemButton>
+                            <ListItemButton onClick={logout}>
+                                <ListItemIcon>
+                                    <Icon>logout</Icon>
+                                </ListItemIcon>
+                                <ListItemText primary="Sair"/>
                             </ListItemButton>
                         </List>
                     </Box>

@@ -17,8 +17,8 @@ interface IFormData {
 }
 
 const formValidationSchema: yup.Schema<IFormData> = yup.object().shape({
-    nomeCompleto: yup.string().required().min(3, 'O campo precisa ter no mínimo 3 caracteres'),
-    email: yup.string().required('O campo é obrigatório').email(),
+    nomeCompleto: yup.string().required().min(3),
+    email: yup.string().required().email(),
     cidadeId: yup.number().required(),
 });
 

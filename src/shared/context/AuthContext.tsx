@@ -1,59 +1,62 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { Usuario } from '../models/Usuario';
+import { AuthService } from '../services/api/auth/AuthService';
 
-interface AuthContextData {
-    signed: boolean;
+interface IAuthContextData {
+    isAuthenticated: boolean;
     user: Usuario | null;
-    Login(user: object): Promise<void>;
-    Logout(): void;
+    login: (email: string, password: string) => Promise<string | void>;
+    logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+const AuthContext = createContext({} as IAuthContextData);
 
 interface IAuthProviderProps {
     children: React.ReactNode
 }
 
-export const AuthProvider: React.FC<IAuthProviderProps> = ({ children }) => {
+export const AuthProvider = ({ children }: IAuthProviderProps) => {
 
-    const [user, setUser] = useState<Usuario | null>(null);
+    const LOCAL_STORAGE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+
+    const [ user, setUser ] = useState(null);
+    const [ accessToken, setAccessToken ] = useState<string>();
 
     useEffect(() => {
-        const storagedUser = localStorage.getItem("@App:user");
-        const storagedToken = localStorage.getItem("@App:token");
+        const accessToken = localStorage.getItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
 
-        if (storagedUser && storagedToken) {
-            setUser(JSON.parse(storagedUser));
+        if(accessToken) {
+            setAccessToken(JSON.parse(accessToken));
+        } else {
+            setAccessToken(undefined);
         }
-    }, [])
+    }, []);
 
-    async function Login(user: Usuario) {
+    const handleLogin = useCallback(async (email: string, password: string) => {
 
-        setUser(user);
+        const result = await AuthService.auth(email, password);
 
-        localStorage.setItem('@App:user', JSON.stringify(user));
-        localStorage.setItem('@App:token', "jsdiwoahdowahduwa");
-    }
+        if(result instanceof Error) {
+            return result.message;
+        } else {
+            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.accessToken));
+            setAccessToken(result.accessToken);
+        }
+    }, []);
 
-    async function Logout() {
+    const handleLogout = useCallback(() => {
+        localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
+        setAccessToken(undefined);
+    }, []);
 
-        setUser(null);
-
-        localStorage.removeItem('@App:user');
-        localStorage.removeItem('@App:token');
-    }
-
+    const isAuthenticated = useMemo(() => !!accessToken, [accessToken]);
 
     return (
-        <AuthContext.Provider value={{ signed: Boolean(user), user, Login, Logout }}>
+        <AuthContext.Provider value={{isAuthenticated, user, login: handleLogin, logout: handleLogout }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-export function useAuth() {
-    const context = useContext(AuthContext);
-
-    return context;
-}
+export const useAuth = () => useContext(AuthContext);

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Grid, LinearProgress, Paper } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom"
 import Typography from "@mui/material/Typography";
@@ -55,7 +55,7 @@ export const DetalheDeCidades = () => {
                 nome: ''
             });
         }
-    }, [id, navigate]);
+    }, [id, navigate, formRef]);
 
     const handleSave = (dados: IFormData) => {
 

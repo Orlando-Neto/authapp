@@ -1,10 +1,10 @@
+import { useEffect, useState } from "react";
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material"
 
-import { FerramentasDaListagem } from "../../shared/components"
-import { LayoutBaseDePagina } from "../../shared/layouts"
-import { useEffect, useState } from "react";
 import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
 import { CidadesService } from "../../shared/services/api/cidades/CidadesService";
+import { FerramentasDaListagem } from "../../shared/components"
+import { LayoutBaseDePagina } from "../../shared/layouts"
 
 export const Dashboard: React.FC = () => {
 
