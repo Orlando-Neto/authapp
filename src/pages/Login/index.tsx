@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 
 import { useDrawerContext } from '../../shared/context';
 import { useAuth } from '../../shared/context';
-import Usuario from '../../model/Usuario';
+import { Usuario } from '../../shared/models/Usuario';
 
 const Login: React.FC = () => {
 

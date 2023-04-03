@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { IListagemPessoa, PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { PessoasService } from "../../shared/services/api/pessoas/PessoasService";
+import { Pessoa } from "../../shared/models/Pessoa";
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { Environment } from "../../shared/environment";
@@ -19,7 +20,7 @@ export const ListagemDePessoas = () => {
     const navigate = useNavigate();
 
     //States para a listagem de pessoas
-    const [rows, setRows] = useState<IListagemPessoa[]>([]);
+    const [rows, setRows] = useState<Pessoa[]>([]);
     const [totalCount, setTotalCount] = useState(0);
 
     //Coloca em modo de carregando em verdade
@@ -135,7 +136,7 @@ export const ListagemDePessoas = () => {
                                             <Pagination
                                                 page={page}
                                                 count={Math.ceil(totalCount / Environment.LIMITE_DE_LINHAS)}
-                                                onChange={(e, newPage) => setSearchParams({search, page: newPage.toString()}, {replace: true})}
+                                                onChange={(_, newPage) => setSearchParams({search, page: newPage.toString()}, {replace: true})}
                                             />
                                     </TableCell>
                                 </TableRow>

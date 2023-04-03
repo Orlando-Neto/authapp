@@ -1,4 +1,5 @@
-export default interface Usuario {
+
+export interface Usuario {
     nome: string
     email: string
     password?: string
