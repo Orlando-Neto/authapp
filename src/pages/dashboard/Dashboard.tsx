@@ -48,7 +48,7 @@ export const Dashboard: React.FC = () => {
 
     return (
         <LayoutBaseDePagina 
-            title='Página inicial totalmente gigante, texto foda gigante gigante'
+            title='Página inicial'
             toolbar={(<FerramentasDaListagem
                 showNewButton={false}
             />)}>
