@@ -3,7 +3,7 @@ import axios from 'axios';
 import { errorInterceptor, responseInterceptor } from './interceptors';
 import { Environment } from '../../../environment';
 
-//Url da api alvo
+//Url da api alvo, usando o axios.create
 const Api = axios.create({
     baseURL: Environment.URL_BASE,
     headers: {

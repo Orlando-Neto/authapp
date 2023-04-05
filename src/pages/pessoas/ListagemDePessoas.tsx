@@ -15,7 +15,7 @@ export const ListagemDePessoas = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     //useDebounce é um método que espera x segundos após terminar de escrever na input
-    const { debounce } = useDebounce(1000);
+    const { debounce } = useDebounce(3000);
 
     const navigate = useNavigate();
 

@@ -20,4 +20,6 @@ export const Environment = {
      * Url base de consulta da Api da aplicação
      */
     URL_BASE: 'http://localhost:3333',
+
+    Language: 'pt-BR',
 };

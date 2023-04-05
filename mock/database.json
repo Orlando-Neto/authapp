@@ -1,35 +1,19 @@
 {
   "pessoas": [
     {
-      "id": 8,
-      "nomeCompleto": "dwad",
-      "email": "scelerisque.dwwa.dui@yahoo.edu",
-      "cidadeId": 1
-    },
-    {
-      "nomeCompleto": "didi",
-      "email": "didi@gmail",
-      "cidadeId": 1,
-      "id": 9
-    },
-    {
-      "nomeCompleto": "teste22",
-      "email": "daw@daws.com",
-      "cidadeId": 1,
-      "id": 10
-    },
-    {
       "nomeCompleto": "fefedadw",
       "email": "dwad@dadwa",
       "cidadeId": 3,
       "id": 11
+    },
+    {
+      "nomeCompleto": "dadw",
+      "email": "dwda@dwad",
+      "cidadeId": 2,
+      "id": 12
     }
   ],
   "cidades": [
-    {
-      "id": 1,
-      "nome": "Teste22"
-    },
     {
       "id": 2,
       "nome": "Teste55"
