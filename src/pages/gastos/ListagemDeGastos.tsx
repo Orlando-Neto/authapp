@@ -2,25 +2,25 @@ import { useEffect, useMemo, useState } from "react";
 import { Icon, IconButton, LinearProgress, Pagination, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { CidadesService } from "../../shared/services/api/cidades/CidadesService";
+import { GastosService } from "../../shared/services/api/gastos/GastosService";
+import { Gasto } from "../../shared/models/Gasto";
 import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { Environment } from "../../shared/environment";
-import { Cidade } from "../../shared/models/Cidade";
 import { useDebounce } from "../../shared/hooks";
 
-export const ListagemDeCidades = () => {
+export const ListagemDeGastos = () => {
 
     //Usando o seacrhParams para que a busca seja escrita na URL para poder compartilhar a busca
     const [searchParams, setSearchParams] = useSearchParams();
 
     //useDebounce é um método que espera x segundos após terminar de escrever na input
-    const { debounce } = useDebounce(1000);
+    const { debounce } = useDebounce(3000);
 
     const navigate = useNavigate();
 
-    //States para a listagem de cidades
-    const [rows, setRows] = useState<Cidade[]>([]);
+    //States para a listagem de pessoas
+    const [rows, setRows] = useState<Gasto[]>([]);
     const [totalCount, setTotalCount] = useState(0);
 
     //Coloca em modo de carregando em verdade
@@ -38,7 +38,7 @@ export const ListagemDeCidades = () => {
         setIsLoading(true);
 
         debounce(() => {
-            CidadesService.getAll(page, search)
+            GastosService.getAll(page, search)
                 .then((result) => {
                     
                     setIsLoading(false);
@@ -47,6 +47,7 @@ export const ListagemDeCidades = () => {
                         alert(result.message);
                     } else {
                         
+                        console.log(result);
                         setRows(result.data);
                         setTotalCount(result.totalCount);
                     }
@@ -57,15 +58,13 @@ export const ListagemDeCidades = () => {
     const handleDelete = (id: number) => {
 
         if(window.confirm("Realmente deseja apagar?")) {
-            CidadesService.deleteById(id)
+            GastosService.deleteById(id)
                 .then(result => {
                     if(result instanceof Error) {
                         alert(result.message);
                     } else {
-                        setRows(oldRows => [
-                                ...oldRows.filter(oldRow => oldRow.id !== id)
-                        ]);
-
+                        
+                        
                         alert("Registro apagado com sucesso!");
                     }
                 });
@@ -74,11 +73,11 @@ export const ListagemDeCidades = () => {
 
     return (
         <LayoutBaseDePagina 
-            title="Listagem de Cidades"
+            title="Listagem de Gastos"
             toolbar={
                 <FerramentasDaListagem
                     textNewButton="Nova"
-                    onClickNewButton={() => navigate('/cidades/detalhe/nova')}
+                    onClickNewButton={() => navigate('/pessoas/detalhe/nova')}
                     showInputSearch
                     textSearch={search}
                     onChangeTextSearch={text => setSearchParams({search: text, page: '1'}, {replace: true})}
@@ -89,24 +88,36 @@ export const ListagemDeCidades = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell width={100}>Ações</TableCell>
-                            <TableCell>Nome</TableCell>
+                            <TableCell>Empresa</TableCell>
+                            <TableCell>Centro de Custo</TableCell>
+                            <TableCell>Número Doc.</TableCell>
+                            <TableCell>Grupo da Conta</TableCell>
+                            <TableCell>Conta</TableCell>
+                            <TableCell>Grupo do Gasto</TableCell>
+                            <TableCell>Data Compet.</TableCell>
+                            <TableCell>Data Liquid.</TableCell>
+                            <TableCell>Valor</TableCell>
+                            <TableCell>Arquivo</TableCell>
+                            <TableCell>Código</TableCell>
                         </TableRow>
                     </TableHead>
 
                     <TableBody>
                         {
                             rows.map(row => (
-                                <TableRow key={row.id}>
-                                    <TableCell>
-                                        <IconButton size="small" onClick={() => handleDelete(row.id)}>
-                                            <Icon>delete</Icon>
-                                        </IconButton>
-                                        <IconButton size="small" onClick={() => navigate(`/cidades/detalhe/${row.id}`)}>
-                                            <Icon>edit</Icon>
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell>{row.nome}</TableCell>
+                                <TableRow key={row.codigo}>
+                                    
+                                    <TableCell>{row.cod_empresa}</TableCell>
+                                    <TableCell>{row.cod_centro_custo}</TableCell>
+                                    <TableCell>{row.num_documento}</TableCell>
+                                    <TableCell>{""}</TableCell>
+                                    <TableCell>{row.cod_plano_contas}</TableCell>
+                                    <TableCell>{row.cod_tipo}</TableCell>
+                                    <TableCell>{row.data_compet.toString()}</TableCell>
+                                    <TableCell>{row.data_liquid.toString()}</TableCell>
+                                    <TableCell>{row.valor}</TableCell>
+                                    <TableCell>{row.id_arq}</TableCell>
+                                    <TableCell>{row.codigo}</TableCell>
                                 </TableRow>
                             ))
                         }
@@ -120,7 +131,7 @@ export const ListagemDeCidades = () => {
                         {
                             isLoading && (
                                 <TableRow>
-                                    <TableCell colSpan={3}>
+                                    <TableCell colSpan={11}>
                                             <LinearProgress variant="indeterminate" />
                                     </TableCell>
                                 </TableRow>
@@ -129,11 +140,11 @@ export const ListagemDeCidades = () => {
                         {
                             (totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHAS) && (
                                 <TableRow>
-                                    <TableCell colSpan={3}>
+                                    <TableCell colSpan={11}>
                                             <Pagination
                                                 page={page}
                                                 count={Math.ceil(totalCount / Environment.LIMITE_DE_LINHAS)}
-                                                onChange={(e, newPage) => setSearchParams({search, page: newPage.toString()}, {replace: true})}
+                                                onChange={(_, newPage) => setSearchParams({search, page: newPage.toString()}, {replace: true})}
                                             />
                                     </TableCell>
                                 </TableRow>

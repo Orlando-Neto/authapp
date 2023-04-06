@@ -45,7 +45,7 @@ export const AutoCompleteCidade = ({ isExternalLoading = false }: IAutoCompleteC
                     if(result instanceof Error) {
                         // alert(result.message);
                     } else {
-                        console.log(result);
+                        
                         setOpcoes(result.data.map(city => ({id: city.id, label: city.nome})));
                     }
                 });

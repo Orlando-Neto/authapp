@@ -1,4 +1,4 @@
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 
 import './shared/forms/TraducoesYup';
 
@@ -16,13 +16,19 @@ export default function App() {
         <Login>
 
           <DrawerProvider>
-            <BrowserRouter>
-
-              <MenuLateral>
-                <AppRoutes />
-              </MenuLateral>
+            <HashRouter>
               
-            </BrowserRouter>
+              {/* BrowserRouter não está funcionando no 
+              modo produção com o basename dá certo, mas quando der um F5 ele perde
+              o caminho
+              <BrowserRouter basename={Environment.URL_BASE}> */}
+
+                <MenuLateral>
+                  <AppRoutes />
+                </MenuLateral>
+                
+              {/* </BrowserRouter> */}
+            </HashRouter>
           </DrawerProvider>
 
         </Login>

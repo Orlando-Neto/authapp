@@ -25,7 +25,7 @@ export const Dashboard: React.FC = () => {
                 if(result instanceof Error) {
                     alert(result.message);
                 } else {
-                    console.log(result);
+                    
 
                     setTotalCountCidades(result.totalCount);
                 }
@@ -39,7 +39,7 @@ export const Dashboard: React.FC = () => {
                 if(result instanceof Error) {
                     alert(result.message);
                 } else {
-                    console.log(result);
+                    
 
                     setTotalCountPessoas(result.totalCount);
                 }
@@ -53,7 +53,15 @@ export const Dashboard: React.FC = () => {
                 showNewButton={false}
             />)}>
             <Box width='100%' display='flex'>
+
                 <Grid container margin={1}>
+                    <Grid item>
+                        <Typography>
+                            Rodando no {process.env.NODE_ENV} <br/>
+                            URL base api: 
+                        </Typography>
+                    </Grid>
+                    
                     <Grid item container spacing={2}>
                         <Grid item xs={12} md={6} lg={4} xl={3}>
                             <Card>

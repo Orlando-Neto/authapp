@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { Box, Typography, useTheme, IconButton, Icon, useMediaQuery } from '@mui/material';
 
 import { useDrawerContext } from '../context';
@@ -16,6 +16,10 @@ export const LayoutBaseDePagina: React.FC<ILayoutBaseDePaginaProps> = ({children
     const mdDown = useMediaQuery(theme.breakpoints.down('md'));
 
     const { toggleDrawerOpen } = useDrawerContext();
+
+    useEffect(() => {
+        document.title = title;
+    }, [title]);
 
     return (
         <Box

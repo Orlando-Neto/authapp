@@ -1,11 +1,10 @@
 import axios from 'axios';
 
 import { errorInterceptor, responseInterceptor } from './interceptors';
-import { Environment } from '../../../environment';
 
 //Url da api alvo, usando o axios.create
 const Api = axios.create({
-    baseURL: Environment.URL_BASE,
+    baseURL: process.env.REACT_APP_API_URL ?? 'http://localhost:3333',
     headers: {
         Authorization: `Bearer ${JSON.parse(localStorage.getItem("APP_ACCESS_TOKEN") || '""')}`
     }

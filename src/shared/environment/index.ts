@@ -15,11 +15,6 @@ export const Environment = {
      * Texto que será exibido caso haja nenhum registro na tabela ou listagem
      */
     LISTAGEM_VAZIA: 'Nenhum registro encontrado.',
-
-    /**
-     * Url base de consulta da Api da aplicação
-     */
-    URL_BASE: 'http://localhost:3333',
-
-    Language: 'pt-BR',
+    
+    LANGUAGE: 'pt-BR',
 };

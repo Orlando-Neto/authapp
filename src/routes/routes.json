@@ -1,0 +1,22 @@
+[
+    {
+        "label": "Página inicial",
+        "path": "/pagina-inicial",
+        "icon": "home"
+    },
+    {
+        "label": "Pessoas",
+        "path": "/pessoas",
+        "icon": "people"
+    },
+    {
+        "label": "Cidades",
+        "path": "/cidades",
+        "icon": "location_city"
+    },
+    {
+        "label": "Gastos",
+        "path": "/gastos",
+        "icon": "money"
+    }
+]
