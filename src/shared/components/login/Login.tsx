@@ -9,17 +9,17 @@ interface ILoginProps {
 }
 
 const loginSchema = yup.object().shape({
-    email: yup.string().email().required(),
+    usuario: yup.string().required(),
     password: yup.string().min(5).required(),
 });
 
 export const Login = ({ children }: ILoginProps) => {
 
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState<any>();
+    const [ usuario, setUsuario ] = useState('');
+    const [ password, setPassword ] = useState('');
     const [ isLoading, setIsLoading ] = useState(false);
     
-    const [ emailError, setEmailError ] = useState('');
+    const [ usuarioError, setUsuarioError ] = useState('');
     const [ passwordError, setPasswordError ] = useState('');
 
     const { isAuthenticated, login } = useAuth();
@@ -28,16 +28,16 @@ export const Login = ({ children }: ILoginProps) => {
         setIsLoading(true);
 
         loginSchema
-            .validate({email, password}, {abortEarly: false})
+            .validate({usuario, password}, {abortEarly: false})
             .then((dadosValidados) => {
-                login(dadosValidados.email, dadosValidados.password)
+                login(dadosValidados.usuario, dadosValidados.password)
                     .then(() => setIsLoading(false));
             })
             .catch((errors: yup.ValidationError) => {
                 setIsLoading(false);
                 errors.inner.forEach(error => {
-                    if(error.path === 'email') {
-                        setEmailError(error.message);
+                    if(error.path === 'usuario') {
+                        setUsuarioError(error.message);
                     } else if (error.path === 'password') {
                         setPasswordError(error.message);
                     }
@@ -74,14 +74,14 @@ export const Login = ({ children }: ILoginProps) => {
 
                             <TextField
                                 disabled={isLoading}
-                                error={!!emailError}
-                                helperText={emailError}
+                                error={!!usuarioError}
+                                helperText={usuarioError}
                                 fullWidth 
-                                label="Email"
-                                type="email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                onKeyDown={() => setEmailError('')}
+                                label="Usuário"
+                                type="usuario"
+                                value={usuario}
+                                onChange={e => setUsuario(e.target.value)}
+                                onKeyDown={() => setUsuarioError('')}
                             />
 
                             <TextField

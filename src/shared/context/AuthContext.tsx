@@ -21,15 +21,15 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
     const LOCAL_STORAGE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
 
     const [ user, setUser ] = useState(null);
-    const [ accessToken, setAccessToken ] = useState<string>();
+    const [ nome_emp, setNome_emp ] = useState<string>();
 
     useEffect(() => {
-        const accessToken = localStorage.getItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
+        const nome_emp = localStorage.getItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
 
-        if(accessToken) {
-            setAccessToken(JSON.parse(accessToken));
+        if(nome_emp) {
+            setNome_emp(JSON.parse(nome_emp));
         } else {
-            setAccessToken(undefined);
+            setNome_emp(undefined);
         }
     }, []);
 
@@ -40,17 +40,23 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         if(result instanceof Error) {
             return result.message;
         } else {
-            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.accessToken));
-            setAccessToken(result.accessToken);
+            
+            if(result.error) {
+                alert(result.error);
+                return;
+            }
+
+            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.nome_emp));
+            setNome_emp(result.nome_emp);
         }
     }, []);
 
     const handleLogout = useCallback(() => {
         localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
-        setAccessToken(undefined);
+        setNome_emp(undefined);
     }, []);
 
-    const isAuthenticated = useMemo(() => !!accessToken, [accessToken]);
+    const isAuthenticated = useMemo(() => !!nome_emp, [nome_emp]);
 
     return (
         <AuthContext.Provider value={{isAuthenticated, user, login: handleLogin, logout: handleLogout }}>
