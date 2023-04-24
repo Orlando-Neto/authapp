@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Box, Button, Card, CardActions, CardContent, TextField, Typography, CircularProgress } from "@mui/material";
 import * as yup from 'yup';
 
@@ -21,6 +21,9 @@ export const Login = ({ children }: ILoginProps) => {
     
     const [ usuarioError, setUsuarioError ] = useState('');
     const [ passwordError, setPasswordError ] = useState('');
+
+    //Cria uma referencia à um input para poder usar os métodos de input do javascript
+    const passRef = useRef<HTMLInputElement>(null);
 
     const { isAuthenticated, login } = useAuth();
 
@@ -69,7 +72,7 @@ export const Login = ({ children }: ILoginProps) => {
                             width={250}
                         >
                             <Typography variant="h6" align="center">
-                                Identifique-se
+                                Login
                             </Typography>
 
                             <TextField
@@ -81,7 +84,12 @@ export const Login = ({ children }: ILoginProps) => {
                                 type="usuario"
                                 value={usuario}
                                 onChange={e => setUsuario(e.target.value)}
-                                onKeyDown={() => setUsuarioError('')}
+                                onKeyDown={(e) => {
+                                    setUsuarioError('');
+                                    //Focar no password quando clicar no enter
+                                    if(e.key === 'Enter')
+                                        passRef.current?.focus();
+                                }}
                             />
 
                             <TextField
@@ -90,10 +98,17 @@ export const Login = ({ children }: ILoginProps) => {
                                 helperText={passwordError}
                                 fullWidth 
                                 label="Senha"
+                                inputRef={passRef}
                                 type="password"
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
-                                onKeyDown={() => setPasswordError('')}
+                                onKeyDown={(e) => {
+                                    setPasswordError('');
+                                    //Dar submit no formulário quando clicar no enter
+                                    if(e.key === 'Enter') {
+                                        handleSubmit()
+                                    }
+                                }}
                             />
                         </Box>
                     </CardContent>

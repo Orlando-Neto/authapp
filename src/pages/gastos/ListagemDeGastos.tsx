@@ -140,10 +140,12 @@ export const ListagemDeGastos = () => {
                         {
                             (totalCount > 0 && totalCount > Environment.LIMITE_DE_LINHAS) && (
                                 <TableRow>
-                                    <TableCell colSpan={11}>
+                                    <TableCell colSpan={5}>Total de {(totalCount)} registros</TableCell>
+                                    <TableCell colSpan={6} align="right">
                                             <Pagination
                                                 page={page}
-                                                count={Math.ceil(totalCount / Environment.LIMITE_DE_LINHAS)}
+                                                //ceil arredonda para o maior, assim gerando a paginação corretamente sem perda de dados
+                                                count={Math.ceil(totalCount / Environment.LIMITE_DE_LINHAS)} 
                                                 onChange={(_, newPage) => setSearchParams({search, page: newPage.toString()}, {replace: true})}
                                             />
                                     </TableCell>

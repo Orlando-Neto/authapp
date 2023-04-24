@@ -22,28 +22,13 @@ const AppRoutes: React.FC = () => {
 
     return (
         <Routes>
-            <Route path={`/pagina-inicial`} element={<Dashboard />} />
-
-            <Route path={`/pessoas`}>
-                <Route path="" element={<ListagemDePessoas />} />
-                <Route path="detalhe/:id" element={<DetalheDePessoas />} />
-                <Route path='perfil' element={<Typography>Olá</Typography>} />
-                <Route path='*' element={<Navigate to="" />} />
-            </Route>
-
-            <Route path={`/cidades`}>
-                <Route path="" element={<ListagemDeCidades />} />
-                <Route path="detalhe/:id" element={<DetalheDeCidades />} />
-                <Route path='*' element={<Navigate to="" />} />
-            </Route>
-
             <Route path={`/gastos`}>
                 <Route path="" element={<ListagemDeGastos />} />
             </Route>
 
             <Route path='/graficos' element={<Graficos />} />
 
-            <Route path='/*' element={<Navigate to={`/pagina-inicial`} />} />
+            <Route path='/*' element={<Navigate to={`/gastos`} />} />
         </Routes>
     );
 };
