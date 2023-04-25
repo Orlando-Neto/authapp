@@ -6,7 +6,8 @@ import { AuthService } from '../services/api/auth/AuthService';
 interface IAuthContextData {
     isAuthenticated: boolean;
     user: Usuario | null;
-    login: (email: string, password: string) => Promise<string | void>;
+    login: (usuario: string, password: string) => Promise<string | void>;
+    register: (usuario: string, password: string) => Promise<string | void>;
     logout: () => void;
 }
 
@@ -33,9 +34,9 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         }
     }, []);
 
-    const handleLogin = useCallback(async (email: string, password: string) => {
+    const handleLogin = useCallback(async (usuario: string, password: string) => {
 
-        const result = await AuthService.auth(email, password);
+        const result = await AuthService.auth(usuario, password);
 
         if(result instanceof Error) {
             return result.message;
@@ -56,10 +57,28 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         setNome_emp(undefined);
     }, []);
 
+    const handleRegister = useCallback(async (usuario: string, password: string) => {
+        
+        const result = await AuthService.register(usuario, password);
+
+        if(result instanceof Error) {
+            return result.message;
+        } else {
+            
+            if(result.error) {
+                alert(result.error);
+                return;
+            }
+
+            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.nome_emp));
+            setNome_emp(result.nome_emp);
+        }
+    }, []);
+
     const isAuthenticated = useMemo(() => !!nome_emp, [nome_emp]);
 
     return (
-        <AuthContext.Provider value={{isAuthenticated, user, login: handleLogin, logout: handleLogout }}>
+        <AuthContext.Provider value={{isAuthenticated, user, login: handleLogin, logout: handleLogout, register: handleRegister }}>
             {children}
         </AuthContext.Provider>
     );

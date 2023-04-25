@@ -29,6 +29,20 @@ const auth = async (usuario: string, password: string): Promise<IAuth | Error> =
     }
 };
 
+const register = async (usuario: string, password: string): Promise<IAuth | Error> => {
+
+    const { data } = await Api.post('/register', {
+        usuario: usuario, 
+        senha: password
+    });
+
+    if(data) {
+        return data;
+    }
+
+    return new Error('Erro ao enviar os dados.');
+}
+
 export const AuthService = {
-    auth
+    auth, register
 }
