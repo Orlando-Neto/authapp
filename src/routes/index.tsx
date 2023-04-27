@@ -8,7 +8,6 @@ import {
 } from '../pages';
 
 import routes from './routes.json';
-import { Register } from '../shared/components/register/Register';
 
 const AppRoutes: React.FC = () => {
 

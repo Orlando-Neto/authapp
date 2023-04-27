@@ -5,9 +5,9 @@ import { AuthService } from '../services/api/auth/AuthService';
 
 interface IAuthContextData {
     isAuthenticated: boolean;
-    user: Usuario | null;
+    username: string | null;
     login: (usuario: string, password: string) => Promise<string | void>;
-    register: (usuario: string, password: string) => Promise<string | void>;
+    register: (usuario: Usuario) => Promise<string | object | void>;
     logout: () => void;
 }
 
@@ -21,17 +21,10 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
 
     const LOCAL_STORAGE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
 
-    const [ user, setUser ] = useState(null);
-    const [ nome_emp, setNome_emp ] = useState<string>();
+    const [ username, setUsername ] = useState('');
 
     useEffect(() => {
-        const nome_emp = localStorage.getItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
-
-        if(nome_emp) {
-            setNome_emp(JSON.parse(nome_emp));
-        } else {
-            setNome_emp(undefined);
-        }
+        
     }, []);
 
     const handleLogin = useCallback(async (usuario: string, password: string) => {
@@ -48,37 +41,47 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
             }
 
             localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.nome_emp));
-            setNome_emp(result.nome_emp);
+            
         }
     }, []);
 
     const handleLogout = useCallback(() => {
         localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
-        setNome_emp(undefined);
+        
     }, []);
 
-    const handleRegister = useCallback(async (usuario: string, password: string) => {
+    const handleRegister = useCallback(async (usuario: Usuario) => {
         
-        const result = await AuthService.register(usuario, password);
+        const result = await AuthService.register(usuario);
+
+        console.log(result);
 
         if(result instanceof Error) {
+
             return result.message;
         } else {
             
-            if(result.error) {
-                alert(result.error);
-                return;
+            if(result.validation_errors) {
+
+                let arrErrors = {};
+                Object.keys(result.validation_errors).map(error => {
+                    console.log(error);
+                    if(result.validation_errors && result.validation_errors[error])
+                        console.log(result.validation_errors[error]);
+                });
+
+                return arrErrors;
             }
 
-            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.nome_emp));
-            setNome_emp(result.nome_emp);
+            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.token ?? ''));
+            setUsername(result.username ?? '');
         }
     }, []);
 
-    const isAuthenticated = useMemo(() => !!nome_emp, [nome_emp]);
+    const isAuthenticated = useMemo(() => !!username, [username]);
 
     return (
-        <AuthContext.Provider value={{isAuthenticated, user, login: handleLogin, logout: handleLogout, register: handleRegister }}>
+        <AuthContext.Provider value={{isAuthenticated, username, login: handleLogin, logout: handleLogout, register: handleRegister }}>
             {children}
         </AuthContext.Provider>
     );

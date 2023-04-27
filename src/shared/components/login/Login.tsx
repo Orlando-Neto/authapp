@@ -3,6 +3,7 @@ import { Box, Button, Card, CardActions, CardContent, TextField, Typography, Cir
 import * as yup from 'yup';
 
 import { useAuth } from "../../context";
+import { Usuario } from "../../models/Usuario";
 
 interface ILoginProps {
     children: React.ReactNode;
@@ -14,10 +15,11 @@ const loginSchema = yup.object().shape({
     password: yup.string().min(5).required(),
 });*/
 
-const registerSchema = yup.object().shape({
-    usuario: yup.string().required(),
-    password: yup.string().min(5).required()
-});
+// const registerSchema = yup.object().shape({
+//     usuario: yup.string().required(),
+//     password: yup.string().min(5).required(),
+//     password_confirm: yup.string().oneOf([yup.ref('password')], 'Senha tem que ser igual')
+// });
 
 export const Login = ({ children }: ILoginProps) => {
 
@@ -32,9 +34,15 @@ export const Login = ({ children }: ILoginProps) => {
 
     const [ formRegister, setFormRegister ] = useState({
         usuario: '',
-        password: '',
         usuarioError: '',
+        password: '',
         passwordError: '',
+        nome: '',
+        nomeError: '',
+        password_confirm: '',
+        password_confirmError: '',
+        email: '',
+        emailError: ''
     });
 
     const [ isLoading, setIsLoading ] = useState(false);
@@ -43,7 +51,7 @@ export const Login = ({ children }: ILoginProps) => {
     //Cria uma referencia à um input para poder usar os métodos de input do javascript
     const passRef = useRef<HTMLInputElement>(null);
 
-    const { isAuthenticated, login } = useAuth();
+    const { isAuthenticated, login, register } = useAuth();
 
     const handleSubmitLogin = () => {
 
@@ -80,29 +88,44 @@ export const Login = ({ children }: ILoginProps) => {
     const handleSubmitRegister = () => {
         setIsLoading(true);
 
-        registerSchema
-            .validate({
-                usuario: formRegister.usuario, 
-                password: formRegister.password}, 
-                {abortEarly: false})
-            .then((dadosValidados) => {
-                console.log(dadosValidados);
-                setIsLoading(false);
-            })
-            .catch((errors: yup.ValidationError) => {
+        // registerSchema
+        //     .validate({
+        //         usuario: formRegister.usuario, 
+        //         password: formRegister.password, 
+        //         password_confirm: formRegister.password_confirm},
+        //         {abortEarly: false})
+        //     .then((dadosValidados) => {
 
-                setIsLoading(false);
+                const novoUsuario: Usuario = {
+                    nome: formRegister.nome,
+                    password: formRegister.password,
+                    usuario: formRegister.usuario,
+                    email: formRegister.email
+                }
 
-                //Coloca os erros numa variável separada para poder commitar depois do foreach
-                var arrErro = formRegister;
-                errors.inner.forEach(error => {
-                    if(error.path)
-                        arrErro = {...arrErro, [`${error.path}Error`]: error.message}
-                });
+                register(novoUsuario)
+                    .then((res) => {
+                        
+                        setIsLoading(false);
+                        
+                        let arrErrors = {};
+                        
+                    });
+            // })
+            // .catch((errors: yup.ValidationError) => {
 
-                //Commita os erros no setFormLogin
-                setFormRegister(arrErro);
-            });
+            //     setIsLoading(false);
+
+            //     //Coloca os erros numa variável separada para poder commitar depois do foreach
+            //     var arrErro = formRegister;
+            //     errors.inner.forEach(error => {
+            //         if(error.path)
+            //             arrErro = {...arrErro, [`${error.path}Error`]: error.message}
+            //     });
+
+            //     //Commita os erros no setFormLogin
+            //     setFormRegister(arrErro);
+            // });
     };
 
     const NavegarParaRegistrar = () => {
@@ -140,21 +163,46 @@ export const Login = ({ children }: ILoginProps) => {
 
                             <TextField
                                 disabled={isLoading}
+                                error={!!formRegister.nomeError}
+                                helperText={formRegister.nomeError}
+                                fullWidth 
+                                label="Nome"
+                                type="text"
+                                value={formRegister.nome}
+                                onChange={e => setFormRegister({...formRegister, nome: e.target.value})}
+                                onKeyDown={(e) => {
+                                    setFormRegister({...formRegister, nomeError: ''});
+                                }}
+                            />
+
+                            <TextField
+                                disabled={isLoading}
+                                error={!!formRegister.emailError}
+                                helperText={formRegister.emailError}
+                                fullWidth 
+                                label="Email"
+                                type="email"
+                                value={formRegister.email}
+                                onChange={e => setFormRegister({...formRegister, email: e.target.value})}
+                                onKeyDown={(e) => {
+                                    setFormRegister({...formRegister, emailError: ''});
+                                }}
+                            />
+
+                            <TextField
+                                disabled={isLoading}
                                 error={!!formRegister.usuarioError}
                                 helperText={formRegister.usuarioError}
                                 fullWidth 
                                 label="Usuário"
-                                type="usuario"
+                                type="text"
                                 value={formRegister.usuario}
                                 onChange={e => setFormRegister({...formRegister, usuario: e.target.value})}
                                 onKeyDown={(e) => {
                                     setFormRegister({...formRegister, usuarioError: ''});
-                                    //Focar no password quando clicar no enter
-                                    if(e.key === 'Enter')
-                                        passRef.current?.focus();
                                 }}
                             />
-
+                            
                             <TextField
                                 disabled={isLoading}
                                 error={!!formRegister.passwordError}
@@ -167,9 +215,23 @@ export const Login = ({ children }: ILoginProps) => {
                                 onChange={e => setFormRegister({...formRegister, password: e.target.value})}
                                 onKeyDown={(e) => {
                                     setFormRegister({...formRegister, passwordError: ''});
+                                }}
+                            />
+                            
+                            <TextField
+                                disabled={isLoading}
+                                error={!!formRegister.password_confirmError}
+                                helperText={formRegister.password_confirmError}
+                                fullWidth 
+                                label="Confirmar Senha"
+                                type="password"
+                                value={formRegister.password_confirm}
+                                onChange={e => setFormRegister({...formRegister, password_confirm: e.target.value})}
+                                onKeyDown={(e) => {
+                                    setFormRegister({...formRegister, password_confirmError: ''});
                                     //Dar submit no formulário quando clicar no enter
                                     if(e.key === 'Enter') {
-                                        handleSubmitLogin()
+                                        handleSubmitRegister()
                                     }
                                 }}
                             />

@@ -1,9 +1,18 @@
+import { Usuario } from "../../../models/Usuario";
 import { Api } from "../axios-config";
 
 interface IAuth {
-    accessToken: string;
-    error: string;
-    nome_emp: string;
+    token?: string;
+    error?: string;
+    nome_emp?: string;
+}
+
+interface IRegister {
+    status?: number,
+    username?: string,
+    token?: string,
+    message?: string,
+    validation_errors?: object
 }
 
 const auth = async (usuario: string, password: string): Promise<IAuth | Error> => {
@@ -29,11 +38,15 @@ const auth = async (usuario: string, password: string): Promise<IAuth | Error> =
     }
 };
 
-const register = async (usuario: string, password: string): Promise<IAuth | Error> => {
+const register = async (usuario: Usuario): Promise<IRegister | Error> => {
 
-    const { data } = await Api.post('/register', {
-        usuario: usuario, 
-        senha: password
+    await Api.get('/sanctum/csrf-cookie');
+
+    const { data } = await Api.post('/api/register', {
+        usuario: usuario.usuario, 
+        password: usuario.password,
+        nome: usuario.nome,
+        email: usuario.email
     });
 
     if(data) {
