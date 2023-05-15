@@ -2,7 +2,7 @@ import { HashRouter } from 'react-router-dom';
 
 import './shared/forms/TraducoesYup';
 
-import { AppThemeProvider, AuthProvider, DrawerProvider } from './shared/context';
+import { AppProvider, AppThemeProvider, AuthProvider, DrawerProvider } from './shared/context';
 import { MenuLateral, Login } from './shared/components';
 
 import AppRoutes from './routes';
@@ -12,7 +12,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AppThemeProvider>
-
+        <AppProvider>
         <Login>
 
           <DrawerProvider>
@@ -32,7 +32,7 @@ export default function App() {
           </DrawerProvider>
 
         </Login>
-
+        </AppProvider>
       </AppThemeProvider>
     </AuthProvider>
   );

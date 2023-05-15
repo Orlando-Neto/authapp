@@ -2,12 +2,13 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 
 import { Usuario } from '../models/Usuario';
 import { AuthService } from '../services/api/auth/AuthService';
+import { Api } from '../services/api/axios-config';
 
 interface IAuthContextData {
     isAuthenticated: boolean;
     username: string | null;
-    login: (usuario: string, password: string) => Promise<string | void>;
-    register: (usuario: Usuario) => Promise<string | object | void>;
+    login: (usuario: string, password: string) => Promise<any>;
+    register: (usuario: Usuario) => Promise<any>;
     logout: () => void;
 }
 
@@ -20,11 +21,14 @@ interface IAuthProviderProps {
 export const AuthProvider = ({ children }: IAuthProviderProps) => {
 
     const LOCAL_STORAGE_KEY__ACCESS_TOKEN = 'APP_ACCESS_TOKEN';
+    const LOCAL_STORAGE_KEY__USERNAME = 'APP_USERNAME';
 
     const [ username, setUsername ] = useState('');
 
     useEffect(() => {
-        
+        let username = localStorage.getItem(LOCAL_STORAGE_KEY__USERNAME);
+
+        if(username) setUsername(username);
     }, []);
 
     const handleLogin = useCallback(async (usuario: string, password: string) => {
@@ -32,56 +36,62 @@ export const AuthProvider = ({ children }: IAuthProviderProps) => {
         const result = await AuthService.auth(usuario, password);
 
         if(result instanceof Error) {
-            return result.message;
+            return {errors: result.message};
         } else {
             
-            if(result.error) {
-                alert(result.error);
-                return;
-            }
+            if(result.status === 200) {
 
-            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.nome_emp));
-            
+                localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.token) ?? '');
+                localStorage.setItem(LOCAL_STORAGE_KEY__USERNAME, JSON.stringify(result.username) ?? '');
+                setUsername(result.username);
+
+                Api.defaults.headers.common['Authorization'] = `Bearer ${result.token}`;
+
+            } else if(result.status === 422) {
+                return result;
+            } else {
+                alert(result.message);
+            }
         }
     }, []);
 
     const handleLogout = useCallback(() => {
         localStorage.removeItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN);
-        
+        localStorage.removeItem(LOCAL_STORAGE_KEY__USERNAME);
+
+        setUsername('');
     }, []);
 
     const handleRegister = useCallback(async (usuario: Usuario) => {
         
         const result = await AuthService.register(usuario);
 
-        console.log(result);
-
         if(result instanceof Error) {
-
-            return result.message;
+            return {errors: result.message};
         } else {
             
-            if(result.validation_errors) {
+            if(result) {
+                localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.token));
+                localStorage.setItem(LOCAL_STORAGE_KEY__USERNAME, JSON.stringify(result.username));
+                setUsername(result.username);
 
-                let arrErrors = {};
-                Object.keys(result.validation_errors).map(error => {
-                    console.log(error);
-                    if(result.validation_errors && result.validation_errors[error])
-                        console.log(result.validation_errors[error]);
-                });
+                Api.defaults.headers.common['Authorization'] = `Bearer ${result.token}`;
 
-                return arrErrors;
+                return result;
             }
-
-            localStorage.setItem(LOCAL_STORAGE_KEY__ACCESS_TOKEN, JSON.stringify(result.token ?? ''));
-            setUsername(result.username ?? '');
         }
     }, []);
 
     const isAuthenticated = useMemo(() => !!username, [username]);
 
     return (
-        <AuthContext.Provider value={{isAuthenticated, username, login: handleLogin, logout: handleLogout, register: handleRegister }}>
+        <AuthContext.Provider value={{
+            isAuthenticated,
+            username,
+            login: handleLogin,
+            logout: handleLogout,
+            register: handleRegister
+        }}>
             {children}
         </AuthContext.Provider>
     );

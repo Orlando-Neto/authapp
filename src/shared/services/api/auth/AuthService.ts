@@ -1,36 +1,31 @@
 import { Usuario } from "../../../models/Usuario";
 import { Api } from "../axios-config";
 
-interface IAuth {
-    token?: string;
-    error?: string;
-    nome_emp?: string;
+interface iAuth {
+    message: string;
+    status: number;
+    token: string
+    username: string
 }
 
-interface IRegister {
-    status?: number,
-    username?: string,
-    token?: string,
-    message?: string,
-    validation_errors?: object
-}
-
-const auth = async (usuario: string, password: string): Promise<IAuth | Error> => {
+const auth = async (usuario: string, password: string): Promise<iAuth | Error> => {
     
     try {
 
-        const { data } = await Api.post('/login', {
-            usuario: usuario, 
-            senha: password, 
-            token_emp: '92939fa8d79b9d034ade147a28db7f4ec353ae08'
-        });
+        const res = await Api.get('/sanctum/csrf-cookie');
 
-        if(data) {
-            return data;
+        if(res.status === 204) {
+
+            const { data } = await Api.post('/api/login', { usuario, password });
+
+            if(data) {
+                return data;
+            }
+
+            return new Error('Erro no login.');
+        } else {
+            return new Error('Cross Origin não está ligado.');
         }
-
-        return new Error('Erro no login.');
-        
     } catch(error) {
 
         console.error(error);
@@ -38,22 +33,28 @@ const auth = async (usuario: string, password: string): Promise<IAuth | Error> =
     }
 };
 
-const register = async (usuario: Usuario): Promise<IRegister | Error> => {
 
-    await Api.get('/sanctum/csrf-cookie');
+const register = async (usuario: Usuario): Promise<any | Error> => {
 
-    const { data } = await Api.post('/api/register', {
-        usuario: usuario.usuario, 
-        password: usuario.password,
-        nome: usuario.nome,
-        email: usuario.email
-    });
+    const res = await Api.get('/sanctum/csrf-cookie');
 
-    if(data) {
-        return data;
+    if(res.status === 204) {
+
+        const { data } = await Api.post('/api/register', {
+            usuario: usuario.usuario, 
+            password: usuario.password,
+            nome: usuario.nome,
+            email: usuario.email
+        });
+    
+        if(data) {
+            return data;
+        }
+    
+        return new Error('Erro ao enviar os dados.');
+    } else {
+        return new Error('Cross Origin não está ligado.');
     }
-
-    return new Error('Erro ao enviar os dados.');
 }
 
 export const AuthService = {

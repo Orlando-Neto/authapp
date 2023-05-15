@@ -8,6 +8,7 @@ import { FerramentasDaListagem } from "../../shared/components";
 import { LayoutBaseDePagina } from "../../shared/layouts";
 import { Environment } from "../../shared/environment";
 import { useDebounce } from "../../shared/hooks";
+import { useApp } from "../../shared/context/AppContext";
 
 export const ListagemDeGastos = () => {
 
@@ -33,6 +34,8 @@ export const ListagemDeGastos = () => {
     const page = useMemo(() => {
         return Number(searchParams.get('page') || 1);
     }, [searchParams]);
+
+    const { mData } = useApp();
 
     useEffect(() => {
         setIsLoading(true);
@@ -105,7 +108,7 @@ export const ListagemDeGastos = () => {
                     <TableBody>
                         {
                             rows.map(row => (
-                                <TableRow key={row.codigo}>
+                                <TableRow key={row.id}>
                                     
                                     <TableCell>{row.cod_empresa}</TableCell>
                                     <TableCell>{row.cod_centro_custo}</TableCell>
@@ -113,11 +116,11 @@ export const ListagemDeGastos = () => {
                                     <TableCell>{""}</TableCell>
                                     <TableCell>{row.cod_plano_contas}</TableCell>
                                     <TableCell>{row.cod_tipo}</TableCell>
-                                    <TableCell>{row.data_compet.toString()}</TableCell>
-                                    <TableCell>{row.data_liquid.toString()}</TableCell>
+                                    <TableCell>{mData(row.data_compet.toString())}</TableCell>
+                                    <TableCell>{mData(row.data_liquid.toString())}</TableCell>
                                     <TableCell>{row.valor}</TableCell>
                                     <TableCell>{row.id_arq}</TableCell>
-                                    <TableCell>{row.codigo}</TableCell>
+                                    <TableCell>{row.id}</TableCell>
                                 </TableRow>
                             ))
                         }

@@ -3,7 +3,7 @@ export interface Gasto {
     mes: number;
     ano: number;
     historico: string;
-    codigo: number;
+    id: number;
     cod_empresa: number;
     cod_plano_contas: string;
     cod_centro_custo: string;

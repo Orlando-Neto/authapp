@@ -11,15 +11,22 @@ const getAll = async (page = 1, filter = ''): Promise<TGastosComTotalCount | Err
     
     try {
 
-        const relativeUrl = `/gastos?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
-        
-        const { data } = await Api.get(relativeUrl);
+        const res = await Api.get('/sanctum/csrf-cookie');
 
-        if(data) {
-            return data;
+        if(res.status === 204) {
+
+            const relativeUrl = `/api/gastos?_page=${page}&_limit=${Environment.LIMITE_DE_LINHAS}&nome_like=${filter}`;
+            
+            const { data } = await Api.get(relativeUrl);
+            
+            if(data) {
+                return data;
+            }
+
+            return new Error('Erro ao listar os registros.');
+        } else {
+            return new Error('Cross Origin não está ligado.');
         }
-
-        return new Error('Erro ao listar os registros.');
         
     } catch(error) {
         console.error(error);
@@ -32,7 +39,7 @@ const getById = async (id: number): Promise<Gasto | Error> => {
     
     try {
 
-        const { data } = await Api.get(`/gastos/${id}`);
+        const { data } = await Api.get(`/api/gastos/${id}`);
 
         if(data) {
             return data;
@@ -54,7 +61,7 @@ const create = async (dados: Omit<Gasto, 'id'>): Promise<number | Error> => {
         const { data } = await Api.post<Gasto>('/gastos', dados);
 
         if(data) {
-            return Number(data.codigo);
+            return Number(data.id);
         }
 
         return new Error('Erro ao criar o registro.');

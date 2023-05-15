@@ -9,17 +9,18 @@ interface ILoginProps {
     children: React.ReactNode;
 }
 
-/*
 const loginSchema = yup.object().shape({
     usuario: yup.string().required(),
     password: yup.string().min(5).required(),
-});*/
+});
 
-// const registerSchema = yup.object().shape({
-//     usuario: yup.string().required(),
-//     password: yup.string().min(5).required(),
-//     password_confirm: yup.string().oneOf([yup.ref('password')], 'Senha tem que ser igual')
-// });
+const registerSchema = yup.object().shape({
+    nome: yup.string().required(),
+    email: yup.string().email().required(),
+    usuario: yup.string().required(),
+    password: yup.string().min(5).required(),
+    password_confirm: yup.string().oneOf([yup.ref('password')], 'Senha tem que ser igual')
+});
 
 export const Login = ({ children }: ILoginProps) => {
 
@@ -28,21 +29,25 @@ export const Login = ({ children }: ILoginProps) => {
     const [ formLogin, setFormLogin ] = useState({
         usuario: '',
         password: '',
-        usuarioError: '',
-        passwordError: '',
+        error_list: {
+            usuario: '',
+            password: '',
+        }
     });
 
     const [ formRegister, setFormRegister ] = useState({
         usuario: '',
-        usuarioError: '',
         password: '',
-        passwordError: '',
         nome: '',
-        nomeError: '',
         password_confirm: '',
-        password_confirmError: '',
         email: '',
-        emailError: ''
+        error_list: { //Listagem de erros, fica melhor para quando retornar o erro do back end
+            nome: '',
+            email: '',
+            usuario: '',
+            password: '',
+            password_confirm: ''
+        },
     });
 
     const [ isLoading, setIsLoading ] = useState(false);
@@ -57,50 +62,56 @@ export const Login = ({ children }: ILoginProps) => {
 
         setIsLoading(true);
 
-        // loginSchema
-        //     .validate({
-        //         usuario: formLogin.usuario, 
-        //         password: formLogin.password}, 
-        //         {abortEarly: false})
-        //     .then((dadosValidados) => {
-                // login(dadosValidados.usuario, dadosValidados.password)
-                //     .then(() => setIsLoading(false));
-                login(formLogin.usuario, formLogin.password)
-                    .then(() => setIsLoading(false));
-            // })
-            // .catch((errors: yup.ValidationError) => {
+        loginSchema
+            .validate({
+                usuario: formLogin.usuario, 
+                password: formLogin.password}, 
+                {abortEarly: false})
+            .then((dadosValidados) => {
+                login(dadosValidados.usuario, dadosValidados.password)
+                    .then((res) => {
+                        setIsLoading(false);
+                        
+                        if(res && res.status === 422) {
+                            setFormLogin({...formLogin, error_list: res.validation_errors});
+                        }
+                    });
+            })
+            .catch((errors: yup.ValidationError) => {
 
-            //     setIsLoading(false);
+                setIsLoading(false);
 
-            //     //Coloca os erros numa variável separada para poder commitar depois do foreach
-            //     var arrErro = formLogin;
-            //     errors.inner.forEach(error => {
-            //         if(error.path)
-            //             arrErro = {...arrErro, [`${error.path}Error`]: error.message}
-            //     });
+                //Coloca os erros numa variável separada para poder commitar depois do foreach
+                var arrErro = formLogin.error_list;
+                errors.inner.forEach(error => {
+                    if(error.path)
+                        arrErro = {...arrErro, [error.path]: error.message}
+                });
 
-            //     //Commita os erros no setFormLogin
-            //     setFormLogin(arrErro);
+                //Commita os erros no setFormLogin
+                setFormLogin({...formLogin, error_list: arrErro});
 
-            // });
+            });
     };
 
     const handleSubmitRegister = () => {
         setIsLoading(true);
 
-        // registerSchema
-        //     .validate({
-        //         usuario: formRegister.usuario, 
-        //         password: formRegister.password, 
-        //         password_confirm: formRegister.password_confirm},
-        //         {abortEarly: false})
-        //     .then((dadosValidados) => {
+        registerSchema
+            .validate({
+                nome: formRegister.nome, 
+                email: formRegister.email, 
+                usuario: formRegister.usuario, 
+                password: formRegister.password, 
+                password_confirm: formRegister.password_confirm},
+                {abortEarly: false})
+            .then((dadosValidados) => {
 
                 const novoUsuario: Usuario = {
-                    nome: formRegister.nome,
-                    password: formRegister.password,
-                    usuario: formRegister.usuario,
-                    email: formRegister.email
+                    nome: dadosValidados.nome,
+                    password: dadosValidados.password,
+                    usuario: dadosValidados.usuario,
+                    email: dadosValidados.email
                 }
 
                 register(novoUsuario)
@@ -108,24 +119,27 @@ export const Login = ({ children }: ILoginProps) => {
                         
                         setIsLoading(false);
                         
-                        let arrErrors = {};
-                        
+                        if(res.status === 200) {
+                            
+                        } else {
+                            setFormRegister({...formRegister, error_list: res.validation_errors});
+                        }
                     });
-            // })
-            // .catch((errors: yup.ValidationError) => {
+            })
+            .catch((errors: yup.ValidationError) => {
 
-            //     setIsLoading(false);
+                setIsLoading(false);
 
-            //     //Coloca os erros numa variável separada para poder commitar depois do foreach
-            //     var arrErro = formRegister;
-            //     errors.inner.forEach(error => {
-            //         if(error.path)
-            //             arrErro = {...arrErro, [`${error.path}Error`]: error.message}
-            //     });
+                //Coloca os erros numa variável separada para poder commitar depois do foreach
+                var arrErro = formRegister.error_list;
+                errors.inner.forEach(error => {
+                    if(error.path)
+                        arrErro = {...arrErro, [error.path]: error.message}
+                });
 
-            //     //Commita os erros no setFormLogin
-            //     setFormRegister(arrErro);
-            // });
+                //Commita os erros no setFormLogin
+                setFormRegister({...formRegister, error_list: arrErro});
+            });
     };
 
     const NavegarParaRegistrar = () => {
@@ -163,50 +177,56 @@ export const Login = ({ children }: ILoginProps) => {
 
                             <TextField
                                 disabled={isLoading}
-                                error={!!formRegister.nomeError}
-                                helperText={formRegister.nomeError}
+                                error={!!formRegister.error_list.nome}
+                                helperText={formRegister.error_list.nome}
                                 fullWidth 
                                 label="Nome"
                                 type="text"
                                 value={formRegister.nome}
                                 onChange={e => setFormRegister({...formRegister, nome: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormRegister({...formRegister, nomeError: ''});
+                                    let error_list = formRegister.error_list;
+                                    error_list.nome = '';
+                                    setFormRegister({...formRegister, error_list});
                                 }}
                             />
 
                             <TextField
                                 disabled={isLoading}
-                                error={!!formRegister.emailError}
-                                helperText={formRegister.emailError}
+                                error={!!formRegister.error_list.email}
+                                helperText={formRegister.error_list.email}
                                 fullWidth 
                                 label="Email"
                                 type="email"
                                 value={formRegister.email}
                                 onChange={e => setFormRegister({...formRegister, email: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormRegister({...formRegister, emailError: ''});
+                                    let error_list = formRegister.error_list;
+                                    error_list.email = '';
+                                    setFormRegister({...formRegister, error_list});
                                 }}
                             />
 
                             <TextField
                                 disabled={isLoading}
-                                error={!!formRegister.usuarioError}
-                                helperText={formRegister.usuarioError}
+                                error={!!formRegister.error_list.usuario}
+                                helperText={formRegister.error_list.usuario}
                                 fullWidth 
                                 label="Usuário"
                                 type="text"
                                 value={formRegister.usuario}
                                 onChange={e => setFormRegister({...formRegister, usuario: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormRegister({...formRegister, usuarioError: ''});
+                                    let error_list = formRegister.error_list;
+                                    error_list.usuario = '';
+                                    setFormRegister({...formRegister, error_list});
                                 }}
                             />
                             
                             <TextField
                                 disabled={isLoading}
-                                error={!!formRegister.passwordError}
-                                helperText={formRegister.passwordError}
+                                error={!!formRegister.error_list.password}
+                                helperText={formRegister.error_list.password}
                                 fullWidth 
                                 label="Senha"
                                 inputRef={passRef}
@@ -214,21 +234,25 @@ export const Login = ({ children }: ILoginProps) => {
                                 value={formRegister.password}
                                 onChange={e => setFormRegister({...formRegister, password: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormRegister({...formRegister, passwordError: ''});
+                                    let error_list = formRegister.error_list;
+                                    error_list.password = '';
+                                    setFormRegister({...formRegister, error_list});
                                 }}
                             />
                             
                             <TextField
                                 disabled={isLoading}
-                                error={!!formRegister.password_confirmError}
-                                helperText={formRegister.password_confirmError}
+                                error={!!formRegister.error_list.password_confirm}
+                                helperText={formRegister.error_list.password_confirm}
                                 fullWidth 
                                 label="Confirmar Senha"
                                 type="password"
                                 value={formRegister.password_confirm}
                                 onChange={e => setFormRegister({...formRegister, password_confirm: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormRegister({...formRegister, password_confirmError: ''});
+                                    let error_list = formRegister.error_list;
+                                    error_list.password_confirm = '';
+                                    setFormRegister({...formRegister, error_list});
                                     //Dar submit no formulário quando clicar no enter
                                     if(e.key === 'Enter') {
                                         handleSubmitRegister()
@@ -293,15 +317,17 @@ export const Login = ({ children }: ILoginProps) => {
 
                             <TextField
                                 disabled={isLoading}
-                                error={!!formLogin.usuarioError}
-                                helperText={formLogin.usuarioError}
+                                error={!!formLogin.error_list.usuario}
+                                helperText={formLogin.error_list.usuario}
                                 fullWidth 
                                 label="Usuário"
                                 type="usuario"
                                 value={formLogin.usuario}
                                 onChange={e => setFormLogin({...formLogin, usuario: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormLogin({...formLogin, usuarioError: ''});
+                                    let error_list = formLogin.error_list;
+                                    error_list.usuario = '';
+                                    setFormLogin({...formLogin, error_list});
                                     //Focar no password quando clicar no enter
                                     if(e.key === 'Enter')
                                         passRef.current?.focus();
@@ -310,8 +336,8 @@ export const Login = ({ children }: ILoginProps) => {
 
                             <TextField
                                 disabled={isLoading}
-                                error={!!formLogin.passwordError}
-                                helperText={formLogin.passwordError}
+                                error={!!formLogin.error_list.password}
+                                helperText={formLogin.error_list.password}
                                 fullWidth 
                                 label="Senha"
                                 inputRef={passRef}
@@ -319,7 +345,10 @@ export const Login = ({ children }: ILoginProps) => {
                                 value={formLogin.password}
                                 onChange={e => setFormLogin({...formLogin, password: e.target.value})}
                                 onKeyDown={(e) => {
-                                    setFormLogin({...formLogin, passwordError: ''});
+
+                                    let error_list = formLogin.error_list;
+                                    error_list.password = '';
+                                    setFormLogin({...formLogin, error_list});
 
                                     //Dar submit no formulário quando clicar no enter
                                     if(e.key === 'Enter') {

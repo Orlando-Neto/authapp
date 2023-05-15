@@ -16,16 +16,12 @@ export const Graficos = () => {
         tooltip: {
           trigger: 'item'
         },
-        grid:{
-          height: '150px'
-        },
         legend: {
           orient: 'vertical',
           left: 'left'
         },
         series: [
           {
-            name: 'Access From',
             type: 'pie',
             radius: '50%',
             data: [
